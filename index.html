@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Equb</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+  
+</head>
+
+<body>
+  <main>
+    <div class="container pt-5 pb-5">
+      <div class="row">
+        <div class="col-md-6">
+          <h2>Add Members & Contributions</h2>
+          <div class="col-auto mb-3">
+            <label for="fName">First Name</label>
+            <input type="text" class="form-control" id="fName" />
+          </div>
+          <div class="col-auto mb-3">
+            <label for="lName">Last Name</label>
+            <input type="text" class="form-control" id="lName" />
+          </div>
+          <div class="col-auto mb-3">
+            <label for="pNo">Phone Number</label>
+            <input type="tel" class="form-control" id="pNo" />
+          </div>
+          <div class="col-auto mb-3">
+            <label for="contribution">Contribution</label>
+            <select class="form-select" aria-label="Default select example" id="contribution">
+              <option value="" selected></option>
+              <option value="1000">1,000</option>
+              <option value="2000">2,000</option>
+              <option value="3000">3,000</option>
+            </select>
+          </div>
+
+          <p id="message"></p>
+
+          <div class="col-auto">
+            <button type="button" id="bt1" class="btn btn-primary mb-3">
+              Submit
+            </button>
+          </div>
+        </div>
+
+        <div class="col-md-6 text-center align-items-center">
+          <h2>Members</h2>
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Phone Number</th>
+                <th scope="col">Contribution</th>
+              </tr>
+            </thead>
+            <tbody id="memberTableBody">
+
+            </tbody>
+          </table>
+
+          <div class="container pt-3">
+            <div class="col-auto">
+              <button type="button" id="btG" class="btn btn-primary mb-3">
+                Generate Winner
+              </button>
+            </div>
+            <h3>Winner</h3>
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th scope="col">Name</th>
+                  <th scope="col">Phone Number</th>
+                  <th scope="col">Amount Won</th>
+                </tr>
+              </thead>
+              <tbody id="winnerTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <script>
+    let submitButton = document.getElementById("bt1");
+    let generatorButton = document.getElementById("btG");
+    let inFirstName = document.getElementById("fName");
+    let inLastName = document.getElementById("lName");
+    let inPNo = document.getElementById("pNo");
+    let inContribution = document.getElementById("contribution");
+    let memberTableBody = document.getElementById("memberTableBody");
+    let members = [];
+    let wonMoney = 0;
+
+    submitButton.addEventListener("click", () => {
+      let firstName = inFirstName.value;
+      let lastName = inLastName.value;
+      let fullName = firstName + " " + lastName;
+      let newPNo = inPNo.value;
+      let newContribution = Number(inContribution.value);
+
+      //to empty form before next entry
+      document.getElementById("fName").value = "";
+      document.getElementById("lName").value = "";
+      document.getElementById("pNo").value = "";
+      document.getElementById("contribution").value = "";
+
+      let newMember = document.createElement('tr');
+      let newMemberN = document.createElement('td');
+      newMemberN.textContent = fullName;
+      let newMemberP = document.createElement('td');
+      newMemberP.textContent = newPNo;
+      let newMemberC = document.createElement('td');
+      newMemberC.textContent = newContribution;
+
+      newMember.appendChild(newMemberN);
+      newMember.appendChild(newMemberP);
+      newMember.appendChild(newMemberC);
+      memberTableBody.appendChild(newMember);
+
+      //to store entries in an object array
+      let member = {
+        name: fullName,
+        phoneNumber: newPNo,
+        contribution: newContribution
+      };
+      members.push(member);
+    });
+
+    function getWinner() {
+  if (members.length === 0) {
+    return null;
+  }
+  const winnerIndex = Math.floor(Math.random() * members.length);
+  return members[winnerIndex];
+}
+
+function getWonMoney() {
+  if (members.length === 0) {
+    return null;
+  }
+  
+  let wonMoney = 0;  // Initialize wonMoney to zero
+
+  members.forEach(function (value, index, arr) {
+    wonMoney += value["contribution"];
+  });
+
+  return wonMoney;
+}
+
+
+    generatorButton.addEventListener("click", () => {
+    let winner = getWinner();
+    const winnerTableBody = document.getElementById("winnerTableBody");
+
+    // Display winner info in a table
+    if (winner) {
+      let winnerRow = document.createElement('tr');
+
+      let winnerNameCell = document.createElement('td');
+      winnerNameCell.textContent = winner["name"];
+
+      let winnerPhoneCell = document.createElement('td');
+      winnerPhoneCell.textContent = winner["phoneNumber"];
+
+      let winnerAmountCell = document.createElement('td');
+      winnerAmountCell.textContent = getWonMoney();
+
+      winnerRow.appendChild(winnerNameCell);
+      winnerRow.appendChild(winnerPhoneCell);
+      winnerRow.appendChild(winnerAmountCell);
+
+      winnerTableBody.appendChild(winnerRow);
+    } 
+  });
+  </script>
+</body>
+
+</html>
